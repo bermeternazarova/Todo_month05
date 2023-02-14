@@ -1,21 +1,19 @@
 package com.example.todo_month05.ui
 
-import android.app.AlertDialog
-import android.content.DialogInterface
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.Menu
 import android.widget.Toast
 import androidx.activity.viewModels
+import com.example.todo_month05.data.local.Task
 import com.example.todo_month05.databinding.ActivityMainBinding
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity() {
-   private lateinit var binding: ActivityMainBinding
+class MainActivity : AppCompatActivity(){
+
+    private lateinit var binding: ActivityMainBinding
    private val viewModel :MainViewModel  by viewModels()
-    @Inject lateinit var adapterMain: AdapterMain
+    private lateinit var adapterMain: AdapterMain
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,11 +24,15 @@ class MainActivity : AppCompatActivity() {
         observers()
     }
 
+    private fun onClick(task: Task) {
+        viewModel.deleteTask(task)
+    }
+
     private fun initialize() {
+        adapterMain =AdapterMain(this::onClick)
         binding.rvTodo.adapter = adapterMain
         viewModel.getAllTask()
     }
-
     private fun observers() {
         viewModel.tasks.observe(this){
             binding.refreshLayout.isRefreshing = false
@@ -39,16 +41,18 @@ class MainActivity : AppCompatActivity() {
         viewModel.event.observe(this){
             Toast.makeText(this,it,Toast.LENGTH_SHORT).show()
         }
-        viewModel.deletedTAsk.observe(this){
-            viewModel.deleteTask(it)
-        }
     }
     private fun initListeners() {
         binding.btnTodo.setOnClickListener {
-        viewModel.insertTask(binding.etTodo.text.toString())
-        }
+        viewModel.insertTask(binding.etTodo.text.toString())}
         binding.refreshLayout.setOnRefreshListener {
             viewModel.getAllTask()
         }
-    }
+        binding.btnClearAll.setOnClickListener {
+         viewModel.deleteAllTask()
+        }
+        binding.btnSorted.setOnClickListener {
+            viewModel.sorted()
+        }
+}
 }

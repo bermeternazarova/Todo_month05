@@ -21,11 +21,13 @@ class MainViewModel @Inject constructor(private val dao: TaskDao):ViewModel() {
     fun getAllTask(){
          tasks.value = dao.getTasks()
     }
-
-
-
-    val deletedTAsk=MutableLiveData<Task>()
     fun deleteTask(task: Task){
         dao.deleteTask(task)
+    }
+    fun deleteAllTask(){
+        dao.deleteAll()
+    }
+    fun sorted(){
+        dao.sortedByAlphabet()
     }
 }

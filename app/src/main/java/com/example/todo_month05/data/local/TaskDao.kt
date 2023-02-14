@@ -14,6 +14,9 @@ fun getTasks():List<Task>
 @Delete
 fun deleteTask(task: Task)
 
-    @Query("SELECT * FROM Task ORDER BY task Asc")
+    @Query("DELETE FROM Task")
+    fun deleteAll()
+
+    @Query("SELECT * FROM Task ORDER BY task ASC")
     fun sortedByAlphabet():List<Task>
 }
